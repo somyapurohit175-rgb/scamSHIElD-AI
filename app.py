@@ -2,7 +2,6 @@ import string
 import pickle
 import streamlit as st
 
-# ─── Page Config (MUST be first Streamlit call) ───────────────────────────────
 st.set_page_config(
     page_title="ScamSHEILD – Job Scam Detector",
     page_icon="🛡️",
@@ -10,7 +9,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# ─── Custom CSS ───────────────────────────────────────────────────────────────
 st.markdown("""
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -355,7 +353,6 @@ html, body, [class*="css"] {
 """, unsafe_allow_html=True)
 
 
-# ─── Hero ─────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero-wrap">
     <div class="hero-badge">AI-Powered Protection</div>
@@ -366,7 +363,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ─── Input ────────────────────────────────────────────────────────────────────
 st.markdown('<div class="input-label">📩 Message to analyze</div>', unsafe_allow_html=True)
 user_input = st.text_area(
     label="",
@@ -378,7 +374,6 @@ user_input = st.text_area(
 st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
 
 
-# ─── Load Model ───────────────────────────────────────────────────────────────
 @st.cache_resource
 def load_model():
     model = pickle.load(open("model.pkl", "rb"))
@@ -388,7 +383,6 @@ def load_model():
 model, vectorizer = load_model()
 
 
-# ─── Helpers ──────────────────────────────────────────────────────────────────
 def clean_text(text: str) -> str:
     text = text.lower()
     text = text.translate(str.maketrans('', '', string.punctuation))
@@ -401,11 +395,9 @@ SCAM_SIGNALS = [
 ]
 
 
-# ─── Analyze Button ───────────────────────────────────────────────────────────
 analyze = st.button("🔍  Analyze Message", use_container_width=True)
 
 if analyze:
-    # ── Scroll to top immediately ──
     st.markdown("""
 <script>
 (function() {
@@ -435,7 +427,6 @@ if analyze:
 
         st.markdown('<hr class="custom-divider">', unsafe_allow_html=True)
 
-        # ── Build segmented bar (20 segments) ──
         TOTAL_SEGS = 20
         def seg_bar(pct: int, kind: str) -> str:
             filled = round(pct / 100 * TOTAL_SEGS)
@@ -480,7 +471,6 @@ if analyze:
 </div>
 """, unsafe_allow_html=True)
 
-        # ── Detected Signals ──
         if found_signals:
             chips_html = "".join(f'<span class="ind-chip">{w}</span>' for w in found_signals)
             st.markdown(f"""
@@ -490,7 +480,6 @@ if analyze:
 </div>
 """, unsafe_allow_html=True)
 
-        # ── Golden Rules Card ──
         if prediction == 1:
             rules = [
                 ("warn",  "🚫", "<strong>Never pay upfront.</strong> Legitimate employers do not charge registration, training, or security deposit fees."),
@@ -518,7 +507,6 @@ if analyze:
 """, unsafe_allow_html=True)
 
 
-# ─── Footer ───────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="footer">ScamSHEILD · Protect yourself, always verify independently</div>
 """, unsafe_allow_html=True)
